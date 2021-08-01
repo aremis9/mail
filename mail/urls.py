@@ -4,10 +4,10 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("<str:page>/", views.page, name="page"),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
     path("register/", views.register, name="register"),
+    path("<str:page>/", views.page, name="page"),
 
     # API Routes
     path("emails/", views.compose, name="compose"),

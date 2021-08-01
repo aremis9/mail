@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
       button.onclick = function() {
           const page = this.innerHTML;
           console.log(page)
-          if (page != 'Send') {
+          if (page != 'Send' || page != 'Logout') {
             // Add the current state to the history
             history.pushState({section: page}, "", `${page}`);
           }

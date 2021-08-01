@@ -21,8 +21,9 @@ def index(request):
         return HttpResponseRedirect(reverse("login"))
 
 
+@login_required
 def page(request, page):
-    return HttpResponseRedirect(reverse("index"))
+    return JsonResponse({})
 
 
 @csrf_exempt
