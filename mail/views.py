@@ -21,6 +21,10 @@ def index(request):
         return HttpResponseRedirect(reverse("login"))
 
 
+def page(request, page):
+    return HttpResponseRedirect(reverse("index"))
+
+
 @csrf_exempt
 @login_required
 def compose(request):
