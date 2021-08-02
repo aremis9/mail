@@ -5,22 +5,22 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
-  // document.querySelector('#submit').addEventListener('click', compose_email);
+  // document.querySelector('#compose-form').addEventListener('submit', send_email);
 
   // By default, load the inbox
   load_mailbox('inbox');
 
-  document.querySelectorAll('button').forEach(button => {
-      button.onclick = function() {
-          const page = this.innerHTML;
-          console.log(page)
-          if (page != 'Send' || page != 'Logout') {
-            // Add the current state to the history
-            history.pushState({section: page}, "", `${page}`);
-          }
+  // document.querySelectorAll('button').forEach(button => {
+  //     button.onclick = function() {
+  //         const page = this.innerHTML;
 
-      };
-  });
+  //         if (page != "Send" || page != 'Logout') {
+  //           // Add the current state to the history
+  //           history.pushState({section: page}, "", `${page}`);
+  //         }
+
+  //     };
+  // });
 
 });
 
@@ -44,14 +44,13 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#mailbox').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
   // Request data
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
       // Print emails
-      console.log(mailbox)
       console.log(emails);
 
       // ... do something else with emails ...
@@ -59,24 +58,24 @@ function load_mailbox(mailbox) {
 
 }
 
-function sendemail() {
-  var recipients = document.querySelector('#compose-recipients')
-  var subject = document.querySelector('#compose-subject')
-  var body = document.querySelector('#compose-body')
-
-
+function send_email() {
+  var recipients = document.querySelector('#compose-recipients').value
+  var subject = document.querySelector('#compose-subject').value
+  var body = document.querySelector('#compose-body').value
 
   fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
-        recipients: 'baz@example.com',
-        subject: 'Meeting time',
-        body: 'How about we meet tomorrow at 3pm?'
+        recipients: recipients,
+        subject: subject,
+        body: body
     })
   })
   .then(response => response.json())
   .then(result => {
       // Print result
       console.log(result);
-  });
+      load_mailbox('sent')
+  })
+
 }

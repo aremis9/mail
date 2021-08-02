@@ -21,11 +21,6 @@ def index(request):
         return HttpResponseRedirect(reverse("login"))
 
 
-@login_required
-def page(request, page):
-    return JsonResponse({})
-
-
 @csrf_exempt
 @login_required
 def compose(request):
@@ -36,6 +31,7 @@ def compose(request):
 
     # Check recipient emails
     data = json.loads(request.body)
+    print(data)
     emails = [email.strip() for email in data.get("recipients").split(",")]
     if emails == [""]:
         return JsonResponse({
