@@ -115,8 +115,8 @@ function show_mail(id, is_read, sender, subject, timestamp) {
     original.parentNode.appendChild(clone)
 }
 
-function view_email(event) {
-    var email_id = event.id
+function view_email(email) {
+    var email_id = email.id
 
     // Show the email and hide other views
     document.querySelector('#emails-view').style.display = 'none';
@@ -161,4 +161,15 @@ function view_email(event) {
 
     });
 
+}
+
+function archive(btn) {
+    var email_id = btn.id
+
+    fetch(`/emails/${email_id}/`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            archived: true
+        })
+    })
 }
