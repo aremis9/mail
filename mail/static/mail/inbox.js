@@ -28,6 +28,7 @@ function compose_email() {
 
     // Show compose view and hide other views
     document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#view-email').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'block';
 
     // Clear out composition fields
@@ -42,6 +43,7 @@ function load_mailbox(mailbox) {
     // Show the mailbox and hide other views
     document.querySelector('#emails-view').style.display = 'block';
     document.querySelector('#compose-view').style.display = 'none';
+    document.querySelector('#view-email').style.display = 'none';
 
     // Show the mailbox name
     document.querySelector('#mailbox').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -57,15 +59,15 @@ function load_mailbox(mailbox) {
     .then(emails => {
         // Print emails
         emails.forEach((email) => {
+            var id = email.id
             var is_read = email.read
             var sender = email.sender
             var subject = email.subject
             var timestamp = email.timestamp
 
-            show_mail(is_read, sender, subject, timestamp)
+            show_mail(id, is_read, sender, subject, timestamp)
         });
 
-        // ... do something else with emails ...
     });
 
 }
@@ -92,7 +94,7 @@ function send_email() {
 
 }
 
-function show_mail(is_read, sender, subject, timestamp) {
+function show_mail(id, is_read, sender, subject, timestamp) {
     var original = document.getElementById('mail')
     var clone = original.cloneNode(true)
     clone.style.display = "flex"
@@ -107,5 +109,56 @@ function show_mail(is_read, sender, subject, timestamp) {
         clone.classList.add('list-group-item-secondary')
     }
 
+    clone.id = id
+    clone.setAttribute("onclick", "view_email(this)")
+
     original.parentNode.appendChild(clone)
+}
+
+function view_email(event) {
+    var email_id = event.id
+
+    // Show the email and hide other views
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'none';
+    document.querySelector('#view-email').style.display = 'block';
+
+    // Mark email as read
+    fetch(`/emails/${email_id}/`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            read: true
+        })
+    })
+
+    // Request data
+    fetch(`/emails/${email_id}`)
+    .then(response => response.json())
+    .then(email => {
+
+        // Take email infos
+        var sender = email.sender
+        var recipients_arr = email.recipients
+        var subject = email.subject
+        var timestamp = email.timestamp
+        var body = email.body
+
+        // Turn recipients into a string
+        var recipients = ''
+        recipients_arr.forEach(r => {
+            recipients = recipients + ", " + r
+        })
+
+        recipients = recipients.slice(2, -1) + 'm'
+
+        var view_email = document.querySelector('#view-email')
+        view_email.querySelector('#from').innerHTML = sender
+        view_email.querySelector('#to').innerHTML = recipients
+        view_email.querySelector('#subject').innerHTML = subject
+        view_email.querySelector('#timestamp').innerHTML = timestamp
+        view_email.querySelector('#body').innerHTML = body
+
+
+    });
+
 }

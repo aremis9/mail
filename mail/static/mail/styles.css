@@ -1,3 +1,15 @@
 textarea {
     min-height: 400px;
 }
+
+ #emails-view, #view-email {
+     padding-bottom: 80px;
+ }
+
+ #view-email > div {
+    line-height: 1.5;
+ }
+
+ br {
+     line-height: 1.3
+ }

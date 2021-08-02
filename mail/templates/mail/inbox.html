@@ -24,6 +24,29 @@
         </div>
     </div>
 
+    <div id="view-email">
+        <div>
+            <strong>From: </strong>
+            <span id="from"></span>
+        </div>
+        <div>
+            <strong>To: </strong>
+            <span id="to"></span>
+        </div>
+        <div>
+            <strong>Subject: </strong>
+            <span id="subject"></span>
+        </div>
+        <div>
+            <strong>Timestamp: </strong>
+            <span id="timestamp"></span>
+        </div>
+        <button class="btn btn-sm btn-outline-primary" style="margin-top: 20px;">Reply</button>
+        <hr>
+        <div id="body">
+        </div>
+    </div>
+
     <div id="compose-view">
         <h3>New Email</h3>
         <form action="" method="" id="compose-form" style="margin-bottom: 50px;" onsubmit="send_email();return false;">
