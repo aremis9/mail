@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body %}
-    <h2>{{ request.user.email }}</h2>
+    <h2 id="user-email">{{ request.user.email }}</h2>
 
     <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
     <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
@@ -41,8 +41,9 @@
             <strong>Timestamp: </strong>
             <span id="timestamp"></span>
         </div>
-        <button class="btn btn-sm btn-outline-primary" style="margin: 20px 0;">Reply</button><br>
-        <button class="btn btn-sm btn-outline-dark" onclick="archive(this)"><i class="material-icons">&#xe149;</i><span>Archive</span></button> 
+        <span id="id" style="display: none;"></span>
+        <button class="btn btn-sm btn-outline-primary" style="margin: 20px 0;" onclick="reply()">Reply</button><br>
+        <button class="btn btn-sm btn-outline-dark" id="archive" onclick="archive()"><i class="material-icons">&#xe149;</i><span>Archive</span></button> 
         <hr>
         <div id="body">
         </div>
@@ -55,10 +56,10 @@
                 From: <input disabled class="form-control" value="{{ request.user.email }}">
             </div>
             <div class="form-group">
-                To: <input id="compose-recipients" class="form-control" required>
+                To: <input id="compose-recipients" class="form-control" required autocomplete="off">
             </div>
             <div class="form-group">
-                <input class="form-control" id="compose-subject" placeholder="Subject" required>
+                <input class="form-control" id="compose-subject" placeholder="Subject" required autocomplete="off">
             </div>
             <textarea class="form-control" id="compose-body" placeholder="Body" required></textarea>
             <input type="submit" class="btn btn-sm btn-primary" id="send" style="padding: 10px 50px; margin: 20px auto;">

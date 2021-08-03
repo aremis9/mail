@@ -87,8 +87,6 @@ function send_email() {
     })
     .then(response => response.json())
     .then(result => {
-        // Print result
-        console.log(result);
         load_mailbox('sent')
     })
 
@@ -142,6 +140,7 @@ function view_email(email) {
         var subject = email.subject
         var timestamp = email.timestamp
         var body = email.body
+        var id = email.id
 
         // Turn recipients into a string
         var recipients = ''
@@ -157,19 +156,88 @@ function view_email(email) {
         view_email.querySelector('#subject').innerHTML = subject
         view_email.querySelector('#timestamp').innerHTML = timestamp
         view_email.querySelector('#body').innerHTML = body
+        view_email.querySelector('#id').innerHTML = id
 
 
+        if (document.querySelector('#user-email').innerHTML == sender) {
+            view_email.querySelector('#archive').style.display = 'none'
+        }
+        else {
+            view_email.querySelector('#archive').style.display = 'inline-block'
+            if (email.archived) {
+                view_email.querySelector('#archive').innerHTML = 'Unarchive'
+            }
+            else {
+                view_email.querySelector('#archive').innerHTML = 'Archive'
+            }
+        }
     });
 
 }
 
-function archive(btn) {
-    var email_id = btn.id
 
-    fetch(`/emails/${email_id}/`, {
-        method: 'PUT',
-        body: JSON.stringify({
-            archived: true
-        })
-    })
+function reply() {
+    var view_email = document.querySelector('#view-email')
+    var email_id = view_email.querySelector('#id').innerHTML
+
+    fetch(`/emails/${email_id}`)
+    .then(response => response.json())
+    .then(email => {
+        compose_email()
+        document.querySelector("#compose-form").reset();
+
+        // pre-fill recipients
+        document.querySelector('#compose-recipients').value = email.sender
+
+        // add 'Re:' to subject
+        var subject = email.subject
+        if (subject.slice(0, 3) != 'Re:') {
+            subject = "Re: " + subject
+        }
+        document.querySelector('#compose-subject').value = subject
+
+        // Add reply line in body input
+        var follow_line = `On ${email.timestamp} ${email.sender} wrote: "${email.body}"`
+        document.querySelector('#compose-body').innerHTML = follow_line
+
+
+    });
+}
+
+
+function archive() {
+    var view_email = document.querySelector('#view-email')
+    var email_id = view_email.querySelector('#id').innerHTML
+
+
+    fetch(`/emails/${email_id}`)
+    .then(response => response.json())
+    .then(email => {
+        if (email.archived) {
+
+            fetch(`/emails/${email_id}/`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    archived: false
+                })
+            })
+            // view_email.querySelector('#archive').innerHTML = 'Archive'
+            
+        }
+        else {
+
+            fetch(`/emails/${email_id}/`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    archived: true
+                })
+            })
+
+            // view_email.querySelector('#archive').innerHTML = 'Unarchive'
+
+        }
+
+        load_mailbox('inbox');
+    });
+
 }
